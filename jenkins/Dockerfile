@@ -14,10 +14,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=docker-cli /usr/local/bin/docker /usr/local/bin/docker
-COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
-COPY --from=node-runtime /usr/local/lib/node_modules /usr/local/lib/node_modules
-COPY --from=node-runtime /usr/local/bin/npm /usr/local/bin/npm
-COPY --from=node-runtime /usr/local/bin/npx /usr/local/bin/npx
+# Copy the complete Node installation so npm's relative paths and symlinks
+# resolve exactly as they do in the official Node image.
+COPY --from=node-runtime /usr/local/ /usr/local/
 
 ENV PATH="/usr/local/bin:${PATH}"
 
