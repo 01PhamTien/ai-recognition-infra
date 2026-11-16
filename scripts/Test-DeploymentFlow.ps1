@@ -1,5 +1,5 @@
 ﻿$ErrorActionPreference = 'Stop'
-$global:backendRealKubectl = (Get-Command kubectl -CommandType Application).Source
+$global:backendRealKubectl = (Get-Command kubectl -CommandType Application | Select-Object -First 1).Source
 $global:backendCalls = New-Object 'System.Collections.Generic.List[string]'
 $global:backendFailSchema = $false
 $global:backendNodeCount = 1
