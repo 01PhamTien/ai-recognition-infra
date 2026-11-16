@@ -1,0 +1,8 @@
+# k3s local-path không hỗ trợ RWX. API và Worker phải cùng node đã gắn label.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backend-uploads
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: local-path

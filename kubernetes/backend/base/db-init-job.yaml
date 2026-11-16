@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backend-db-init
+  labels:
+    backend.ai-recognition/phase: schema
+spec:
+  backoffLimit: 4
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: ai-recognition
+        app.kubernetes.io/component: db-init
+    spec:
+      restartPolicy: Never
+      serviceAccountName: backend-runtime
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: db-init
+          image: ghcr.io/01phamtien/ai-recognition-api:CHON_TAG_GHCR
+          imagePullPolicy: IfNotPresent
+          command: [python, -m, backend.app.init_db]
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secrets
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]

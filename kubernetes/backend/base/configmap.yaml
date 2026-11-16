@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  labels:
+    backend.ai-recognition/phase: bootstrap
+data:
+  REDIS_STREAM: recognition:jobs
+  REDIS_GROUP: recognition-workers
+  UPLOAD_DIR: /app/data/uploads
+  MODEL_PATH: /app/model-assets/mobilenetv2-7.onnx
+  LABELS_PATH: /app/model-assets/synset.txt
+  MODEL_VERSION: mobilenetv2-7-v1
+  MODEL_SHA256: c1c513582d56afceff8516c73804e484c81c6a830712ab6d682253f4a3cd042f
+  LABELS_SHA256: acf75ef0abe89694b19056e0796401068b459c457baa30335f240c7692857355
+  MAX_UPLOAD_BYTES: "5242880"
+  MAX_IMAGE_PIXELS: "20000000"
+  TOP_K: "5"
+  JOB_LEASE_SECONDS: "300"
+  LOG_LEVEL: INFO
+  # Frontend cùng origin qua Ingress không cần CORS. Điền origin HTTPS khi khác domain.
+  CORS_ORIGINS: '[]'
