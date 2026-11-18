@@ -1,0 +1,42 @@
+
+groups:
+  - name: infrastructure-alerts
+    rules:
+      # Cảnh báo CPU sử dụng trên 80% trong 5 phút
+      - alert: HighCPUUsage
+        expr: |
+          100 * (1 - avg by (instance) (
+            rate(node_cpu_seconds_total{mode="idle"}[5m])
+          )) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU usage is high"
+          description: "CPU usage on {{ $labels.instance }} is above 80% for 5 minutes."
+
+      # Cảnh báo RAM sử dụng trên 85% trong 5 phút
+      - alert: HighMemoryUsage
+        expr: |
+          100 * (
+            1 - (
+              node_memory_MemAvailable_bytes
+              / node_memory_MemTotal_bytes
+            )
+          ) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memory usage is high"
+          description: "Memory usage on {{ $labels.instance }} is above 85% for 5 minutes."
+
+      # Cảnh báo Node Exporter mất kết nối
+      - alert: NodeExporterDown
+        expr: up{job="node-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node Exporter is down"
+          description: "Prometheus cannot scrape Node Exporter at {{ $labels.instance }}."

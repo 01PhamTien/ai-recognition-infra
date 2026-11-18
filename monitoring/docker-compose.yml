@@ -1,0 +1,96 @@
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    container_name: tv5-prometheus
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - "./prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "./prometheus/rules:/etc/prometheus/rules:ro"
+      - "prometheus_data:/prometheus"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    depends_on:
+      - alertmanager
+
+  
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: tv5-alertmanager
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9093:9093"
+    volumes:
+      - "./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro"
+      - "alertmanager_data:/alertmanager"
+    secrets:
+      - telegram_bot_token
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
+
+
+  node-exporter:
+    image: prom/node-exporter:v1.9.1
+    container_name: tv5-node-exporter
+    restart: unless-stopped
+    pid: host
+    ports:
+      - "127.0.0.1:9100:9100"
+    command:
+      - "--path.rootfs=/host"
+    volumes:
+      - "/:/host:ro"
+
+  grafana:
+    image: grafana/grafana:12.1.0
+    container_name: tv5-grafana
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - "grafana_data:/var/lib/grafana"
+      - "./grafana/provisioning:/etc/grafana/provisioning:ro"
+
+  loki:
+    image: grafana/loki:3.7.0
+    container_name: tv5-loki
+    restart: unless-stopped
+    command:
+      - "-config.file=/etc/loki/loki-config.yaml"
+    volumes:
+      - "./loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro"
+      - "loki_data:/tmp/loki"
+
+  alloy:
+    image: grafana/alloy:v1.10.2
+    container_name: tv5-alloy
+    restart: unless-stopped
+    command:
+      - "run"
+      - "--server.http.listen-addr=0.0.0.0:12345"
+      - "--storage.path=/var/lib/alloy/data"
+      - "/etc/alloy/config.alloy"
+    volumes:
+      - "./alloy/config.alloy:/etc/alloy/config.alloy:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "alloy_data:/var/lib/alloy"
+    depends_on:
+      - loki
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:
+  loki_data:
+  alloy_data:
+
+secrets:
+  telegram_bot_token:
+    file: ./secrets/telegram_bot_token
