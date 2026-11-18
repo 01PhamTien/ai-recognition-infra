@@ -57,11 +57,14 @@ services:
     volumes:
       - "grafana_data:/var/lib/grafana"
       - "./grafana/provisioning:/etc/grafana/provisioning:ro"
+      - "./grafana/dashboards:/var/lib/grafana/dashboards:ro"
 
   loki:
     image: grafana/loki:3.7.0
     container_name: tv5-loki
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:3100:3100"
     command:
       - "-config.file=/etc/loki/loki-config.yaml"
     volumes:
