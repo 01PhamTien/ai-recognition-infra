@@ -3,7 +3,7 @@ global:
   resolve_timeout: 5m
 
 route:
-  receiver: default-receiver
+  receiver: telegram-receiver
   group_by:
     - alertname
     - instance
@@ -12,4 +12,8 @@ route:
   repeat_interval: 4h
 
 receivers:
-  - name: default-receiver
+  - name: telegram-receiver
+    telegram_configs:
+      - bot_token_file: /run/secrets/telegram_bot_token
+        chat_id_file: /run/secrets/telegram_chat_id
+        send_resolved: true

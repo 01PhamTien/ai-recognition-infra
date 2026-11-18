@@ -16,6 +16,7 @@ services:
     depends_on:
       - alertmanager
 
+  
   alertmanager:
     image: prom/alertmanager:v0.28.1
     container_name: tv5-alertmanager
@@ -25,9 +26,13 @@ services:
     volumes:
       - "./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro"
       - "alertmanager_data:/alertmanager"
+    secrets:
+      - telegram_bot_token
+      - telegram_chat_id
     command:
       - "--config.file=/etc/alertmanager/alertmanager.yml"
       - "--storage.path=/alertmanager"
+
 
   node-exporter:
     image: prom/node-exporter:v1.9.1
@@ -86,3 +91,9 @@ volumes:
   grafana_data:
   loki_data:
   alloy_data:
+
+secrets:
+  telegram_bot_token:
+    file: ./secrets/telegram_bot_token
+  telegram_chat_id:
+    file: ./secrets/telegram_chat_id
