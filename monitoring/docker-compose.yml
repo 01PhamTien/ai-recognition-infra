@@ -8,10 +8,26 @@ services:
       - "127.0.0.1:9090:9090"
     volumes:
       - "./prometheus.yml:/etc/prometheus/prometheus.yml:ro"
+      - "./prometheus/rules:/etc/prometheus/rules:ro"
       - "prometheus_data:/prometheus"
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
+    depends_on:
+      - alertmanager
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: tv5-alertmanager
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9093:9093"
+    volumes:
+      - "./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro"
+      - "alertmanager_data:/alertmanager"
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
 
   node-exporter:
     image: prom/node-exporter:v1.9.1
@@ -66,6 +82,7 @@ services:
 
 volumes:
   prometheus_data:
+  alertmanager_data:
   grafana_data:
   loki_data:
   alloy_data:
