@@ -12,3 +12,13 @@
 id_rsa
 id_ed25519
 vault-password*
+
+# Secret/configuration và kết quả kiểm tra local, không đưa vào Git.
+*.env
+.secrets/
+.kube/
+kubeconfig*
+.venv/
+__pycache__/
+.pytest_cache/
+*.rendered.yaml

@@ -1,0 +1,63 @@
+name: Kiểm tra Backend Kubernetes
+on:
+  pull_request:
+    paths:
+      - "kubernetes/backend/**"
+      - "scripts/**"
+      - ".github/workflows/backend-kubernetes.yaml"
+  push:
+    branches: [main, feat/backend-kubernetes-issue-15]
+    paths:
+      - "kubernetes/backend/**"
+      - "scripts/**"
+      - ".github/workflows/backend-kubernetes.yaml"
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Cài công cụ kiểm tra đã cố định phiên bản
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tools = Join-Path $env:RUNNER_TEMP 'backend-tools'
+          New-Item -ItemType Directory -Force -Path $tools | Out-Null
+          Invoke-WebRequest 'https://dl.k8s.io/release/v1.32.2/bin/windows/amd64/kubectl.exe' -OutFile "$tools/kubectl.exe"
+          $expected = (Invoke-WebRequest 'https://dl.k8s.io/release/v1.32.2/bin/windows/amd64/kubectl.exe.sha256').Content.Trim()
+          if ((Get-FileHash "$tools/kubectl.exe" -Algorithm SHA256).Hash.ToLower() -ne $expected) { throw 'kubectl checksum sai' }
+          $release = 'https://github.com/yannh/kubeconform/releases/download/v0.7.0'
+          Invoke-WebRequest "$release/kubeconform-windows-amd64.zip" -OutFile "$tools/kubeconform.zip"
+          Invoke-WebRequest "$release/CHECKSUMS" -OutFile "$tools/CHECKSUMS"
+          $sums = Get-Content "$tools/CHECKSUMS" -Raw
+          $match = [regex]::Match($sums, '(?m)^([a-f0-9]{64})\s+kubeconform-windows-amd64\.zip\s*$')
+          if (-not $match.Success -or (Get-FileHash "$tools/kubeconform.zip" -Algorithm SHA256).Hash.ToLower() -ne $match.Groups[1].Value) { throw 'kubeconform checksum sai' }
+          Expand-Archive "$tools/kubeconform.zip" -DestinationPath $tools
+          $tools >> $env:GITHUB_PATH
+          python -m pip install -r kubernetes/backend/requirements-validation.txt
+          if ($LASTEXITCODE -ne 0) { throw 'pip thất bại' }
+      - name: Kiểm tra ràng buộc cấu hình và cú pháp PowerShell
+        shell: pwsh
+        run: |
+          python scripts/validate_backend.py
+          if ($LASTEXITCODE -ne 0) { throw 'Kiểm tra manifest thất bại' }
+          ./scripts/Test-DeploymentFlow.ps1
+          Get-ChildItem scripts/*.ps1 | ForEach-Object {
+            $parseErrors = $null
+            $tokens = $null
+            [void][Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$parseErrors)
+            if ($parseErrors.Count) { throw ($parseErrors | Out-String) }
+          }
+      - name: Kiểm tra schema Kubernetes 1.32
+        shell: pwsh
+        run: |
+          foreach ($target in @('base', 'overlays/staging', 'overlays/staging-rwx', 'dependencies/staging', 'monitoring')) {
+            $rendered = kubectl kustomize "kubernetes/backend/$target"
+            if ($LASTEXITCODE -ne 0) { throw "Render thất bại: $target" }
+            $rendered | kubeconform -strict -summary -kubernetes-version 1.32.0
+            if ($LASTEXITCODE -ne 0) { throw "Schema không hợp lệ: $target" }
+          }
