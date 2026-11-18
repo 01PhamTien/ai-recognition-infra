@@ -20,8 +20,17 @@ metadata:
   name: jenkins-deploy-role
   namespace: ai-recognition
 rules:
-  - apiGroups: ["", "apps", "networking.k8s.io"]
-    resources: ["deployments", "services", "pods", "configmaps", "secrets", "ingresses"]
+  - apiGroups: [""]
+    resources: ["services", "pods", "configmaps", "secrets", "persistentvolumeclaims", "serviceaccounts"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -44,8 +53,17 @@ metadata:
   name: jenkins-deploy-role
   namespace: ai-recognition-staging
 rules:
-  - apiGroups: ["", "apps", "networking.k8s.io"]
-    resources: ["deployments", "services", "pods", "configmaps", "secrets", "ingresses"]
+  - apiGroups: [""]
+    resources: ["services", "pods", "configmaps", "secrets", "persistentvolumeclaims", "serviceaccounts"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
