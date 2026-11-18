@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: alloy-logs
+  namespace: ai-recognition-staging
+spec:
+  selector:
+    matchLabels:
+      app: alloy-logs
+  template:
+    metadata:
+      labels:
+        app: alloy-logs
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k3s-agent
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: alloy
+          image: grafana/alloy:v1.10.2
+          args:
+            - run
+            - /etc/alloy/config.alloy
+            - --storage.path=/tmp/alloy
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            runAsUser: 0
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alloy
+              readOnly: true
+            - name: pod-logs
+              mountPath: /var/log/pods
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: alloy-logs-config
+        - name: pod-logs
+          hostPath:
+            path: /var/log/pods
+            type: Directory

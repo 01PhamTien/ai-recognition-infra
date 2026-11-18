@@ -1,0 +1,563 @@
+﻿{
+    "annotations":  {
+                        "list":  [
+                                     {
+                                         "builtIn":  1,
+                                         "datasource":  {
+                                                            "type":  "grafana",
+                                                            "uid":  "-- Grafana --"
+                                                        },
+                                         "enable":  true,
+                                         "hide":  true,
+                                         "iconColor":  "rgba(0, 211, 255, 1)",
+                                         "name":  "Annotations \u0026 Alerts",
+                                         "type":  "dashboard"
+                                     }
+                                 ]
+                    },
+    "editable":  true,
+    "fiscalYearStartMonth":  0,
+    "graphTooltip":  0,
+    "id":  7,
+    "links":  [
+
+              ],
+    "panels":  [
+                   {
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "PBFA97CFB590B2093"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "color":  {
+                                                                          "mode":  "palette-classic"
+                                                                      },
+                                                            "custom":  {
+                                                                           "axisBorderShow":  false,
+                                                                           "axisCenteredZero":  false,
+                                                                           "axisColorMode":  "text",
+                                                                           "axisLabel":  "",
+                                                                           "axisPlacement":  "auto",
+                                                                           "barAlignment":  0,
+                                                                           "barWidthFactor":  0.6,
+                                                                           "drawStyle":  "line",
+                                                                           "fillOpacity":  0,
+                                                                           "gradientMode":  "none",
+                                                                           "hideFrom":  {
+                                                                                            "legend":  false,
+                                                                                            "tooltip":  false,
+                                                                                            "viz":  false
+                                                                                        },
+                                                                           "insertNulls":  false,
+                                                                           "lineInterpolation":  "linear",
+                                                                           "lineWidth":  1,
+                                                                           "pointSize":  5,
+                                                                           "scaleDistribution":  {
+                                                                                                     "type":  "linear"
+                                                                                                 },
+                                                                           "showPoints":  "auto",
+                                                                           "spanNulls":  false,
+                                                                           "stacking":  {
+                                                                                            "group":  "A",
+                                                                                            "mode":  "none"
+                                                                                        },
+                                                                           "thresholdsStyle":  {
+                                                                                                   "mode":  "off"
+                                                                                               }
+                                                                       },
+                                                            "mappings":  [
+
+                                                                         ],
+                                                            "thresholds":  {
+                                                                               "mode":  "absolute",
+                                                                               "steps":  [
+                                                                                             {
+                                                                                                 "color":  "green",
+                                                                                                 "value":  0
+                                                                                             },
+                                                                                             {
+                                                                                                 "color":  "red",
+                                                                                                 "value":  80
+                                                                                             }
+                                                                                         ]
+                                                                           }
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "gridPos":  {
+                                       "h":  8,
+                                       "w":  12,
+                                       "x":  0,
+                                       "y":  0
+                                   },
+                       "id":  7,
+                       "options":  {
+                                       "legend":  {
+                                                      "calcs":  [
+
+                                                                ],
+                                                      "displayMode":  "list",
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true
+                                                  },
+                                       "tooltip":  {
+                                                       "hideZeros":  false,
+                                                       "mode":  "single",
+                                                       "sort":  "none"
+                                                   }
+                                   },
+                       "pluginVersion":  "12.1.0",
+                       "targets":  [
+                                       {
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "PBFA97CFB590B2093"
+                                                          },
+                                           "editorMode":  "code",
+                                           "expr":  "(\r\n  100 *\r\n  sum(rate(http_requests_total{job=\"ai-recognition-api\",status=~\"5..\"}[5m]))\r\n  /\r\n  clamp_min(sum(rate(http_requests_total{job=\"ai-recognition-api\"}[5m])), 0.000001)\r\n) or vector(0)",
+                                           "legendFormat":  "__auto",
+                                           "range":  true,
+                                           "refId":  "A"
+                                       }
+                                   ],
+                       "title":  "API Error Rate (%)",
+                       "type":  "timeseries"
+                   },
+                   {
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "PBFA97CFB590B2093"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "color":  {
+                                                                          "mode":  "palette-classic"
+                                                                      },
+                                                            "custom":  {
+                                                                           "axisBorderShow":  false,
+                                                                           "axisCenteredZero":  false,
+                                                                           "axisColorMode":  "text",
+                                                                           "axisLabel":  "",
+                                                                           "axisPlacement":  "auto",
+                                                                           "barAlignment":  0,
+                                                                           "barWidthFactor":  0.6,
+                                                                           "drawStyle":  "line",
+                                                                           "fillOpacity":  0,
+                                                                           "gradientMode":  "none",
+                                                                           "hideFrom":  {
+                                                                                            "legend":  false,
+                                                                                            "tooltip":  false,
+                                                                                            "viz":  false
+                                                                                        },
+                                                                           "insertNulls":  false,
+                                                                           "lineInterpolation":  "linear",
+                                                                           "lineWidth":  1,
+                                                                           "pointSize":  5,
+                                                                           "scaleDistribution":  {
+                                                                                                     "type":  "linear"
+                                                                                                 },
+                                                                           "showPoints":  "auto",
+                                                                           "spanNulls":  false,
+                                                                           "stacking":  {
+                                                                                            "group":  "A",
+                                                                                            "mode":  "none"
+                                                                                        },
+                                                                           "thresholdsStyle":  {
+                                                                                                   "mode":  "off"
+                                                                                               }
+                                                                       },
+                                                            "mappings":  [
+
+                                                                         ],
+                                                            "thresholds":  {
+                                                                               "mode":  "absolute",
+                                                                               "steps":  [
+                                                                                             {
+                                                                                                 "color":  "green",
+                                                                                                 "value":  0
+                                                                                             },
+                                                                                             {
+                                                                                                 "color":  "red",
+                                                                                                 "value":  80
+                                                                                             }
+                                                                                         ]
+                                                                           }
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "gridPos":  {
+                                       "h":  8,
+                                       "w":  12,
+                                       "x":  12,
+                                       "y":  0
+                                   },
+                       "id":  4,
+                       "options":  {
+                                       "legend":  {
+                                                      "calcs":  [
+
+                                                                ],
+                                                      "displayMode":  "list",
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true
+                                                  },
+                                       "tooltip":  {
+                                                       "hideZeros":  false,
+                                                       "mode":  "single",
+                                                       "sort":  "none"
+                                                   }
+                                   },
+                       "pluginVersion":  "12.1.0",
+                       "targets":  [
+                                       {
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "PBFA97CFB590B2093"
+                                                          },
+                                           "editorMode":  "code",
+                                           "expr":  "histogram_quantile(\r\n  0.95,\r\n  sum by (le) (\r\n    rate(http_request_duration_seconds_bucket{job=\"ai-recognition-api\"}[5m])\r\n  )\r\n)",
+                                           "legendFormat":  "__auto",
+                                           "range":  true,
+                                           "refId":  "A"
+                                       }
+                                   ],
+                       "title":  "API Latency p95",
+                       "type":  "timeseries"
+                   },
+                   {
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "PBFA97CFB590B2093"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "color":  {
+                                                                          "mode":  "palette-classic"
+                                                                      },
+                                                            "custom":  {
+                                                                           "axisBorderShow":  false,
+                                                                           "axisCenteredZero":  false,
+                                                                           "axisColorMode":  "text",
+                                                                           "axisLabel":  "",
+                                                                           "axisPlacement":  "auto",
+                                                                           "barAlignment":  0,
+                                                                           "barWidthFactor":  0.6,
+                                                                           "drawStyle":  "line",
+                                                                           "fillOpacity":  0,
+                                                                           "gradientMode":  "none",
+                                                                           "hideFrom":  {
+                                                                                            "legend":  false,
+                                                                                            "tooltip":  false,
+                                                                                            "viz":  false
+                                                                                        },
+                                                                           "insertNulls":  false,
+                                                                           "lineInterpolation":  "linear",
+                                                                           "lineWidth":  1,
+                                                                           "pointSize":  5,
+                                                                           "scaleDistribution":  {
+                                                                                                     "type":  "linear"
+                                                                                                 },
+                                                                           "showPoints":  "auto",
+                                                                           "spanNulls":  false,
+                                                                           "stacking":  {
+                                                                                            "group":  "A",
+                                                                                            "mode":  "none"
+                                                                                        },
+                                                                           "thresholdsStyle":  {
+                                                                                                   "mode":  "off"
+                                                                                               }
+                                                                       },
+                                                            "mappings":  [
+
+                                                                         ],
+                                                            "thresholds":  {
+                                                                               "mode":  "absolute",
+                                                                               "steps":  [
+                                                                                             {
+                                                                                                 "color":  "green",
+                                                                                                 "value":  0
+                                                                                             },
+                                                                                             {
+                                                                                                 "color":  "red",
+                                                                                                 "value":  80
+                                                                                             }
+                                                                                         ]
+                                                                           }
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "gridPos":  {
+                                       "h":  8,
+                                       "w":  12,
+                                       "x":  0,
+                                       "y":  8
+                                   },
+                       "id":  6,
+                       "options":  {
+                                       "legend":  {
+                                                      "calcs":  [
+
+                                                                ],
+                                                      "displayMode":  "list",
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true
+                                                  },
+                                       "tooltip":  {
+                                                       "hideZeros":  false,
+                                                       "mode":  "single",
+                                                       "sort":  "none"
+                                                   }
+                                   },
+                       "pluginVersion":  "12.1.0",
+                       "targets":  [
+                                       {
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "PBFA97CFB590B2093"
+                                                          },
+                                           "editorMode":  "code",
+                                           "expr":  "100 * (1 - node_memory_MemAvailable_bytes{job=\"node-exporter\"} / node_memory_MemTotal_bytes{job=\"node-exporter\"})",
+                                           "legendFormat":  "__auto",
+                                           "range":  true,
+                                           "refId":  "A"
+                                       }
+                                   ],
+                       "title":  "RAM Usage (%)",
+                       "type":  "timeseries"
+                   },
+                   {
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "PBFA97CFB590B2093"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "color":  {
+                                                                          "mode":  "palette-classic"
+                                                                      },
+                                                            "custom":  {
+                                                                           "axisBorderShow":  false,
+                                                                           "axisCenteredZero":  false,
+                                                                           "axisColorMode":  "text",
+                                                                           "axisLabel":  "",
+                                                                           "axisPlacement":  "auto",
+                                                                           "barAlignment":  0,
+                                                                           "barWidthFactor":  0.6,
+                                                                           "drawStyle":  "line",
+                                                                           "fillOpacity":  0,
+                                                                           "gradientMode":  "none",
+                                                                           "hideFrom":  {
+                                                                                            "legend":  false,
+                                                                                            "tooltip":  false,
+                                                                                            "viz":  false
+                                                                                        },
+                                                                           "insertNulls":  false,
+                                                                           "lineInterpolation":  "linear",
+                                                                           "lineWidth":  1,
+                                                                           "pointSize":  5,
+                                                                           "scaleDistribution":  {
+                                                                                                     "type":  "linear"
+                                                                                                 },
+                                                                           "showPoints":  "auto",
+                                                                           "spanNulls":  false,
+                                                                           "stacking":  {
+                                                                                            "group":  "A",
+                                                                                            "mode":  "none"
+                                                                                        },
+                                                                           "thresholdsStyle":  {
+                                                                                                   "mode":  "off"
+                                                                                               }
+                                                                       },
+                                                            "mappings":  [
+
+                                                                         ],
+                                                            "thresholds":  {
+                                                                               "mode":  "absolute",
+                                                                               "steps":  [
+                                                                                             {
+                                                                                                 "color":  "green",
+                                                                                                 "value":  0
+                                                                                             },
+                                                                                             {
+                                                                                                 "color":  "red",
+                                                                                                 "value":  80
+                                                                                             }
+                                                                                         ]
+                                                                           }
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "gridPos":  {
+                                       "h":  8,
+                                       "w":  12,
+                                       "x":  12,
+                                       "y":  8
+                                   },
+                       "id":  2,
+                       "options":  {
+                                       "legend":  {
+                                                      "calcs":  [
+
+                                                                ],
+                                                      "displayMode":  "list",
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true
+                                                  },
+                                       "tooltip":  {
+                                                       "hideZeros":  false,
+                                                       "mode":  "single",
+                                                       "sort":  "none"
+                                                   }
+                                   },
+                       "pluginVersion":  "12.1.0",
+                       "targets":  [
+                                       {
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "PBFA97CFB590B2093"
+                                                          },
+                                           "editorMode":  "code",
+                                           "expr":  "sum(rate(http_requests_total{job=\"ai-recognition-api\"}[5m]))",
+                                           "legendFormat":  "__auto",
+                                           "range":  true,
+                                           "refId":  "A"
+                                       }
+                                   ],
+                       "title":  "API Request Rate",
+                       "type":  "timeseries"
+                   },
+                   {
+                       "datasource":  {
+                                          "type":  "prometheus",
+                                          "uid":  "PBFA97CFB590B2093"
+                                      },
+                       "fieldConfig":  {
+                                           "defaults":  {
+                                                            "color":  {
+                                                                          "mode":  "palette-classic"
+                                                                      },
+                                                            "custom":  {
+                                                                           "axisBorderShow":  false,
+                                                                           "axisCenteredZero":  false,
+                                                                           "axisColorMode":  "text",
+                                                                           "axisLabel":  "",
+                                                                           "axisPlacement":  "auto",
+                                                                           "barAlignment":  0,
+                                                                           "barWidthFactor":  0.6,
+                                                                           "drawStyle":  "line",
+                                                                           "fillOpacity":  0,
+                                                                           "gradientMode":  "none",
+                                                                           "hideFrom":  {
+                                                                                            "legend":  false,
+                                                                                            "tooltip":  false,
+                                                                                            "viz":  false
+                                                                                        },
+                                                                           "insertNulls":  false,
+                                                                           "lineInterpolation":  "linear",
+                                                                           "lineWidth":  1,
+                                                                           "pointSize":  5,
+                                                                           "scaleDistribution":  {
+                                                                                                     "type":  "linear"
+                                                                                                 },
+                                                                           "showPoints":  "auto",
+                                                                           "spanNulls":  false,
+                                                                           "stacking":  {
+                                                                                            "group":  "A",
+                                                                                            "mode":  "none"
+                                                                                        },
+                                                                           "thresholdsStyle":  {
+                                                                                                   "mode":  "off"
+                                                                                               }
+                                                                       },
+                                                            "mappings":  [
+
+                                                                         ],
+                                                            "thresholds":  {
+                                                                               "mode":  "absolute",
+                                                                               "steps":  [
+                                                                                             {
+                                                                                                 "color":  "green",
+                                                                                                 "value":  0
+                                                                                             },
+                                                                                             {
+                                                                                                 "color":  "red",
+                                                                                                 "value":  80
+                                                                                             }
+                                                                                         ]
+                                                                           }
+                                                        },
+                                           "overrides":  [
+
+                                                         ]
+                                       },
+                       "gridPos":  {
+                                       "h":  8,
+                                       "w":  12,
+                                       "x":  0,
+                                       "y":  16
+                                   },
+                       "id":  5,
+                       "options":  {
+                                       "legend":  {
+                                                      "calcs":  [
+
+                                                                ],
+                                                      "displayMode":  "list",
+                                                      "placement":  "bottom",
+                                                      "showLegend":  true
+                                                  },
+                                       "tooltip":  {
+                                                       "hideZeros":  false,
+                                                       "mode":  "single",
+                                                       "sort":  "none"
+                                                   }
+                                   },
+                       "pluginVersion":  "12.1.0",
+                       "targets":  [
+                                       {
+                                           "datasource":  {
+                                                              "type":  "prometheus",
+                                                              "uid":  "PBFA97CFB590B2093"
+                                                          },
+                                           "editorMode":  "code",
+                                           "expr":  "100 * (1 - avg(rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))",
+                                           "legendFormat":  "__auto",
+                                           "range":  true,
+                                           "refId":  "A"
+                                       }
+                                   ],
+                       "title":  "CPU Usage (%)",
+                       "type":  "timeseries"
+                   }
+               ],
+    "preload":  false,
+    "schemaVersion":  41,
+    "tags":  [
+
+             ],
+    "templating":  {
+                       "list":  [
+
+                                ]
+                   },
+    "time":  {
+                 "from":  "2026-11-18T16:42:42.185Z",
+                 "to":  "2026-11-18T20:00:06.819Z"
+             },
+    "timepicker":  {
+
+                   },
+    "timezone":  "browser",
+    "title":  "AI Recognition Monitoring",
+    "uid":  "db74133b-4e9c-4ecd-8e89-ca49ca8cc284",
+    "version":  7
+}
