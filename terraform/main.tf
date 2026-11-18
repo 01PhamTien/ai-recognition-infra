@@ -1,4 +1,5 @@
 ﻿terraform {
+  required_version = ">= 1.5.0"
   required_providers {
     null = {
       source  = "hashicorp/null"
@@ -6,58 +7,56 @@
     }
     local = {
       source  = "hashicorp/local"
-      version = "~> 2.5"
+      version = "~> 2.4"
     }
   }
 }
 
-resource "null_resource" "prepare_k3s_nodes" {
-  for_each = var.k3s_nodes
+# Luu y: VMware Workstation Desktop khong ho tro API tao VM truc tiep.
+# Terraform o day kiem tra ket noi SSH an toan va sinh Ansible inventory tu variables.
+resource "null_resource" "verify_nodes_ssh" {
+  for_each = {
+    server = var.k3s_server
+    agent  = var.k3s_agent
+  }
 
   triggers = {
-    node_ip = each.value
+    node_ip   = each.value.ip
+    node_name = each.value.hostname
   }
 
   connection {
     type        = "ssh"
-    user        = var.ssh_user
-    host        = each.value
-    private_key = file(var.ssh_private_key_path)
-    timeout     = "30s"
+    host        = each.value.ip
+    user        = var.vm_user
+    private_key = file(pathexpand(var.ssh_private_key_path))
   }
 
   provisioner "remote-exec" {
     inline = [
-      "echo '=== Provisioning ${each.key} (${each.value}) ==='",
-      "sudo swapoff -a",
-      "sudo sed -i '/ swap / s/^/#/' /etc/fstab",
-      "printf 'overlay\nbr_netfilter\n' | sudo tee /etc/modules-load.d/k8s.conf",
-      "sudo modprobe overlay",
-      "sudo modprobe br_netfilter",
-      "printf 'net.bridge.bridge-nf-call-iptables  = 1\nnet.bridge.bridge-nf-call-ip6tables = 1\nnet.ipv4.ip_forward                 = 1\n' | sudo tee /etc/sysctl.d/k8s.conf",
-      "sudo sysctl --system > /dev/null",
-      "echo '=== Node ${each.key} Ready for k3s ==='"
+      "echo 'Ket noi SSH an toan thanh cong toi  ()'"
     ]
   }
 }
 
 resource "local_file" "ansible_inventory" {
-  depends_on = [null_resource.prepare_k3s_nodes]
-  filename   = "${path.module}/../ansible/inventory.ini"
-  content    = <<-EOT
+  filename = "/../ansible/inventory.ini"
+  content  = <<-EOT
     [k3s_server]
-    k3s-server ansible_host=${var.k3s_nodes["k3s-server"]} ansible_connection=local
+     ansible_host=
 
     [k3s_agent]
-    k3s-agent ansible_host=${var.k3s_nodes["k3s-agent"]}
+     ansible_host=
 
     [k3s_cluster:children]
     k3s_server
     k3s_agent
 
-    [k3s_cluster:vars]
-    ansible_user=${var.ssh_user}
-    ansible_ssh_private_key_file=~/.ssh/id_ed25519
-    ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+    [all:vars]
+    ansible_user=
+    ansible_ssh_private_key_file=
+    ansible_python_interpreter=/usr/bin/python3
   EOT
+
+  depends_on = [null_resource.verify_nodes_ssh]
 }

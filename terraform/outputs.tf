@@ -1,7 +1,12 @@
-﻿output "provisioned_nodes" {
-  value = var.k3s_nodes
+﻿output "k3s_api_endpoint" {
+  description = "Dia chi Kubernetes API Server"
+  value       = "https://:6443"
 }
 
-output "ansible_inventory_path" {
-  value = local_file.ansible_inventory.filename
+output "cluster_nodes" {
+  description = "Danh sach hostname va IP cac node trong cluster"
+  value = {
+    server = " ()"
+    agent  = " ()"
+  }
 }

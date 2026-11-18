@@ -1,15 +1,35 @@
-﻿variable "ssh_user" {
-  default = "devops"
+﻿variable "vm_user" {
+  description = "User quan tri SSH tren cac VM Ubuntu"
+  type        = string
+  default     = "devops"
 }
 
 variable "ssh_private_key_path" {
-  default = "C:/Users/ASUS/.ssh/id_ed25519"
+  description = "Duong dan toi SSH private key tren may chay Terraform"
+  type        = string
+  default     = "~/.ssh/id_ed25519"
 }
 
-variable "k3s_nodes" {
-  type = map(string)
+variable "k3s_server" {
+  description = "Thong tin may ao Control Plane"
+  type = object({
+    hostname = string
+    ip       = string
+  })
   default = {
-    "k3s-server" = "192.168.174.101"
-    "k3s-agent"  = "192.168.174.102"
+    hostname = "k3s-server"
+    ip       = "192.168.174.101"
+  }
+}
+
+variable "k3s_agent" {
+  description = "Thong tin may ao Worker Node"
+  type = object({
+    hostname = string
+    ip       = string
+  })
+  default = {
+    hostname = "k3s-agent"
+    ip       = "192.168.174.102"
   }
 }
