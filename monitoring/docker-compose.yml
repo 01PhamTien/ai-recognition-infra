@@ -43,7 +43,7 @@ services:
     command:
       - "--path.rootfs=/host"
     volumes:
-      - "/:/host:ro,rslave"
+      - "/:/host:ro"
 
   grafana:
     image: grafana/grafana:12.1.0
